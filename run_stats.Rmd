@@ -276,45 +276,45 @@ max_winstreaks = append(max_winstreaks,n_rot_wins_max)
 ```
 
 
-```{r}
-cat("CURRENT ROTATING STREAK:\n")
+```{r, echo=FALSE, results = 'asis'}
+cat("**CURRENT ROTATING STREAK:**  \n")
 
 plural_var = ifelse(curr_winstreaks[5] > 1,"s","")
 if(curr_winstreaks[5] != 0){
-  cat(sprintf("The current rotating streak is %s consecutive win%s, with %s as the next character\n",curr_winstreaks[5],plural_var,curr_rot_info[[2]]))
+  cat(sprintf("The current rotating streak is %s consecutive win%s, with **%s** as the next character  \n",curr_winstreaks[5],plural_var,curr_rot_info[[2]]))
 }else{
-  cat(print("There is no active rotating streak\n"))
+  cat(print("There is no active rotating streak  \n"))
 }
 
 cat("\n")
 
-cat("CURRENT WIN STREAKS:\n")
+cat("**CURRENT WIN STREAKS:**  \n")
 for(i in 1:4){
   if(curr_winstreaks[i] > 0){
-    cat(sprintf("The %s is currently on a win streak of %s\n",char_vec[i],curr_winstreaks[i]))
+    cat(sprintf("The %s is currently on a win streak of %s  \n",char_vec[i],curr_winstreaks[i]))
   }
 }
 
 cat("\n")
 
-cat("CURRENT LOSS STREAKS:\n")
+cat("**CURRENT LOSS STREAKS:**  \n")
 for(i in 1:4){
   if(curr_lossstreaks[i] > 0){
-    cat(sprintf("The %s is currently on a loss streak of %s\n",char_vec[i],curr_lossstreaks[i]))
+    cat(sprintf("The %s is currently on a loss streak of %s  \n",char_vec[i],curr_lossstreaks[i]))
   }
 }
 
 cat("\n")
 
-cat("PERSONAL BEST/WORST STATS:\n")
-cat(sprintf("The max rotating streak is %s consecutive wins\n",max_winstreaks[5]))
-cat(sprintf("The Ironclad's max streaks are %s consecutive wins and %s consecutive losses\n",max_winstreaks[1],max_lossstreaks[1]))
-cat(sprintf("The Silent's max streaks are %s consecutive wins and %s consecutive losses\n",max_winstreaks[2],max_lossstreaks[2]))
-cat(sprintf("The Defect's max streaks are %s consecutive wins and %s consecutive losses\n",max_winstreaks[3],max_lossstreaks[3]))
-cat(sprintf("The Watcher's max streaks are %s consecutive wins and %s consecutive losses\n",max_winstreaks[4],max_lossstreaks[4]))
+cat("**PERSONAL BEST/WORST STATS:**  \n")
+cat(sprintf("The max rotating streak is %s consecutive wins  \n",max_winstreaks[5]))
+cat(sprintf("The Ironclad's max streaks are %s consecutive wins and %s consecutive losses  \n",max_winstreaks[1],max_lossstreaks[1]))
+cat(sprintf("The Silent's max streaks are %s consecutive wins and %s consecutive losses  \n",max_winstreaks[2],max_lossstreaks[2]))
+cat(sprintf("The Defect's max streaks are %s consecutive wins and %s consecutive losses  \n",max_winstreaks[3],max_lossstreaks[3]))
+cat(sprintf("The Watcher's max streaks are %s consecutive wins and %s consecutive losses  \n",max_winstreaks[4],max_lossstreaks[4]))
 ```
 
-
+<br><br><br><br><br><br><br><br>
 
 
 
