@@ -269,8 +269,8 @@ for(i in 2:nrow(consec_ind)){
   curr_runs = alltab[as.numeric(consec_ind[i,1]):as.numeric(consec_ind[i,2])]
   if(curr_runs$victory[1]){
     n_rot_wins = get_rotating_winstreak(curr_runs)
+    if(n_rot_wins > n_rot_wins_max){n_rot_wins_max = n_rot_wins}
   }
-  if(n_rot_wins > n_rot_wins_max){n_rot_wins_max = n_rot_wins}
 }
 max_winstreaks = append(max_winstreaks,n_rot_wins_max)
 ```
