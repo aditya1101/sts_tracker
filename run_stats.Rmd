@@ -272,7 +272,7 @@ for(i in 2:nrow(consec_ind)){
   }
   if(n_rot_wins > n_rot_wins_max){n_rot_wins_max = n_rot_wins}
 }
-max_winstreaks = append(max_winstreaks,n_rot_wins)
+max_winstreaks = append(max_winstreaks,n_rot_wins_max)
 ```
 
 
