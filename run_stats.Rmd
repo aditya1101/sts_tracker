@@ -163,6 +163,38 @@ p1 = ggplot(plotdata, aes(fill=`Number of Runs`, y=Winrate, x=Character)) +
 ggplotly(p1)
 ```
 
+## Calculate current and max winstreaks
+
+```{r}
+curr_winstreaks = max_winstreaks = curr_lossstreaks = max_lossstreaks = vector("numeric")
+
+#individual character winstreaks
+
+for(char in char_vec){
+  mychar_tab = allchar_list[[char]]
+  mychar_tab = mychar_tab[order(timestamp,decreasing=T)]
+  my_rle = rle(mychar_tab$victory)
+  all_wins = my_rle$length[my_rle$values == TRUE]
+  all_losses = my_rle$length[my_rle$values == FALSE]
+  
+  #get current streaks
+  if(mychar_tab$victory[1]){ #if most recent run was a victory
+    curr_winstreaks = append(curr_winstreaks,all_wins[1])
+    curr_lossstreaks = append(curr_lossstreaks,0)
+  }else{
+    curr_winstreaks = append(curr_winstreaks,0)
+    curr_lossstreaks = append(curr_lossstreaks,all_losses[1])
+  }
+  
+  #get max streaks
+  max_winstreaks = append(max_winstreaks, max(all_wins))
+  max_lossstreaks = append(max_lossstreaks, max(all_losses))
+}
+
+#rotating winstreak, and determine which character i need to play next to continue rotating
+
+
+```
 
 
 
