@@ -277,15 +277,9 @@ max_winstreaks = append(max_winstreaks,n_rot_wins_max)
 
 
 ```{r}
-# print(curr_winstreaks)
-# print(max_winstreaks)
-# print(curr_lossstreaks)
-# print(max_lossstreaks)
-# print(curr_rot_info[[2]])
-
-
+plural_var = ifelse(curr_winstreaks[5] > 1,"s","")
 if(curr_winstreaks[5] != 0){
-  cat(sprintf("The current rotating streak is %s consecutive wins, with %s as the next character\n",curr_winstreaks[5],curr_rot_info[[2]]))
+  cat(sprintf("The current rotating streak is %s consecutive win%s, with %s as the next character\n",curr_winstreaks[5],plural_var,curr_rot_info[[2]]))
 }else{
   cat(print("There is no active rotating streak\n"))
 }
