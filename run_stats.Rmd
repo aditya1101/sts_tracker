@@ -12,6 +12,7 @@ setwd(my_working_dir)
 library(rjson)
 library(data.table)
 library(ggplot2)
+library(plotly)
 ```
 
 ## Transfer any new data
@@ -151,10 +152,15 @@ write.csv(df,file = file.path(my_working_dir,"winrate_history",paste0("winrate_"
 #plot this
 plotdata = melt(data.table(df,keep.rownames = T),id.vars="rn")
 colnames(plotdata) = c("Number of Runs","Character","Winrate")
+plotdata$Winrate = plotdata$Winrate*100
 plotdata$`Number of Runs` = factor(plotdata$`Number of Runs`,levels = c("Overall","Last50","Last25"),ordered=T)
-ggplot(plotdata, aes(fill=`Number of Runs`, y=Winrate, x=Character)) + 
+
+p1 = ggplot(plotdata, aes(fill=`Number of Runs`, y=Winrate, x=Character)) + 
   geom_bar(position="dodge", stat="identity") +
-  scale_fill_manual(values=c("#7dcfb6", "#f79256", "#fbd1a2"))
+  scale_fill_manual(values=c("#7dcfb6", "#f79256", "#fbd1a2")) +
+  ylab("Winrate (%)")
+
+ggplotly(p1)
 ```
 
 
