@@ -37,9 +37,9 @@ for(character in char_vec){
   runs_to_copy_full = all_runs_full[which(all_runs %in% runs_to_copy)]
   if(length(runs_to_copy) > 0){
     out = file.copy(runs_to_copy_full, file.path(storage_dir,character))
-  }
-  if(any(!out)){
-    stop(sprintf("File transfer failed for %s",character))
+    if(any(!out)){
+      stop(sprintf("File transfer failed for %s",character))
+    }
   }
   if(length(list.files(file.path(rundata_dir,character))) != length(list.files(file.path(storage_dir,character)))){ #sanity check to see if number of files is the same
     if(list.files(file.path(rundata_dir,character)) != list.files(file.path(storage_dir,character))){#sanity check to see if all files are the same
