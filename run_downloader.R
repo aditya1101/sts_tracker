@@ -1,8 +1,8 @@
-#This script is for downloading/re-downloading the STS run files from the INSERTHERE folder
+#This script is for downloading/re-downloading the STS run files from the Steam folder
 #it will be sourced at the beginning of run_tracker.R
 
 rundata_dir = "/Users/adityarao/Library/Application Support/Steam/SteamApps/common/SlayTheSpire/SlayTheSpire.app/Contents/Resources/runs"
-storage_dir = "/Users/adityarao/Desktop/sts_tracker/"
+storage_dir = "/Users/adityarao/personal_projects/sts_tracker/"
 
 #make folder to store run history
 storage_dir = file.path(storage_dir,"all_run_history")
