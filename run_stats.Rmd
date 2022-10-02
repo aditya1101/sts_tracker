@@ -1,0 +1,171 @@
+---
+title: "Slay the Spire Run Tracker"
+author: "Aditya Rao"
+date: "2022-09-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+my_working_dir = "/Users/adityarao/personal_projects/sts_tracker"
+setwd(my_working_dir)
+library(rjson)
+library(data.table)
+library(ggplot2)
+```
+
+## Transfer any new data
+
+```{r}
+source(file.path(my_working_dir,"run_downloader.R"))
+```
+
+## Load run files into R as JSONs
+
+Filtering out these runs:
+* Non ascension 20 runs
+* Runs that ended before floor 6 (considering these not serious runs)
+* Runs that were victorious but didn't defeat the heart
+
+```{r}
+storage_dir = file.path(my_working_dir,"all_run_history/")
+
+#make list of all valid ironclad runs
+ironclad_list = list()
+ironclad_files = list.files(file.path(storage_dir,"IRONCLAD"),full.names=T)
+for(fn in ironclad_files){
+  result = fromJSON(file = fn)
+  if(result$ascension_level == 20 && result$floor_reached >= 6){
+    if(!(result$victory == TRUE && result$floor_reached < 52)){
+      ironclad_list[result$play_id] = list(result)
+    }
+  }
+}
+cat(sprintf("%s total Ironclad runs\n",length(ironclad_list)))
+
+#make list of all valid silent runs
+silent_list = list()
+silent_files = list.files(file.path(storage_dir,"THE_SILENT"),full.names=T)
+for(fn in silent_files){
+  result = fromJSON(file = fn)
+  if(result$ascension_level == 20 && result$floor_reached >= 6){
+    if(!(result$victory == TRUE && result$floor_reached < 52)){
+      silent_list[result$play_id] = list(result)
+    }
+  }
+}
+cat(sprintf("%s total Silent runs\n",length(silent_list)))
+
+#make list of all valid defect runs
+defect_list = list()
+defect_files = list.files(file.path(storage_dir,"DEFECT"),full.names=T)
+for(fn in defect_files){
+  result = fromJSON(file = fn)
+  if(result$ascension_level == 20 && result$floor_reached >= 6){
+    if(!(result$victory == TRUE && result$floor_reached < 52)){
+      defect_list[result$play_id] = list(result)
+    }
+  }
+}
+cat(sprintf("%s total Defect runs\n",length(defect_list)))
+
+#make list of all valid watcher runs
+watcher_list = list()
+watcher_files = list.files(file.path(storage_dir,"WATCHER"),full.names=T)
+for(fn in watcher_files){
+  result = fromJSON(file = fn)
+  if(result$ascension_level == 20 && result$floor_reached >= 6){
+    if(!(result$victory == TRUE && result$floor_reached < 52)){
+      watcher_list[result$play_id] = list(result)
+    }
+  }
+}
+cat(sprintf("%s total Watcher runs\n",length(watcher_list)))
+
+```
+
+## Group the data together (preliminary)
+
+```{r, results="hide"}
+#make table for each character with all the 1D attributes (will ignore other stuff for now)
+onedim_cols = c("floor_reached","victory","killed_by","local_time","neow_cost","neow_bonus","campfire_rested","campfire_upgraded",
+                "purchased_purges","player_experience","gold","playtime","seed_played","score","timestamp")
+
+ironclad_tab = rbindlist(lapply(ironclad_list, function(x){
+  x[onedim_cols]
+}),fill=T)
+silent_tab = rbindlist(lapply(silent_list, function(x){
+  x[onedim_cols]
+}),fill=T)
+defect_tab = rbindlist(lapply(defect_list, function(x){
+  x[onedim_cols]
+}),fill=T)
+watcher_tab = rbindlist(lapply(watcher_list, function(x){
+  x[onedim_cols]
+}),fill=T)
+
+#sort with newest runs on top
+ironclad_tab = ironclad_tab[order(timestamp,decreasing=T)]
+silent_tab = silent_tab[order(timestamp,decreasing=T)]
+defect_tab = defect_tab[order(timestamp,decreasing=T)]
+watcher_tab = watcher_tab[order(timestamp,decreasing=T)]
+
+#put them into one list
+allchar_list = list("Ironclad"=ironclad_tab, "Silent"=silent_tab, "Defect"=defect_tab, "Watcher"=watcher_tab)
+```
+
+## For a first pass, I'm just going to output my overall winrate per character/rotating and my winrate per character/rotating over the last 25 and 50 runs
+
+```{r}
+char_vec = c("Ironclad","Silent","Defect","Watcher")
+all_timestamps = c()
+df = setNames(data.frame(matrix(ncol = 5, nrow = 3)), c(char_vec,"Rotating"))
+rownames(df) = c("Overall","Last50","Last25")
+
+for(char in char_vec){
+  mychar_tab = allchar_list[[char]]
+  all_timestamps = c(all_timestamps,mychar_tab[,timestamp])
+  tot = nrow(mychar_tab)
+  win_all = sum(mychar_tab[,victory])/tot
+  win_50 = sum(mychar_tab[,victory][1:min(50,tot)])/min(50,tot)
+  win_25 = sum(mychar_tab[,victory][1:min(25,tot)])/min(25,tot)
+  df[char] = c(win_all,win_50,win_25)
+}
+
+#get rotating stats
+all_timestamps = sort(all_timestamps,decreasing=T)
+tot_curr = winsall_curr = wins50_curr = wins25_curr = 0
+
+for(char in char_vec){
+  mychar_tab = allchar_list[[char]]
+  tot_curr = tot_curr + nrow(mychar_tab)
+  winsall_curr = winsall_curr + sum(mychar_tab$victory)
+  wins50_curr = wins50_curr + sum(mychar_tab[timestamp %in% all_timestamps[1:50]]$victory)
+  wins25_curr = wins25_curr + sum(mychar_tab[timestamp %in% all_timestamps[1:25]]$victory)
+}
+df["Rotating"] = c(winsall_curr/tot_curr,wins50_curr/50,wins25_curr/25)
+
+#save winrate stats over time
+write.csv(df,file = file.path(my_working_dir,"winrate_history",paste0("winrate_",unlist(strsplit(as.character(Sys.time()), split=" "))[1],".csv")))
+
+#plot this
+plotdata = melt(data.table(df,keep.rownames = T),id.vars="rn")
+colnames(plotdata) = c("Number of Runs","Character","Winrate")
+plotdata$`Number of Runs` = factor(plotdata$`Number of Runs`,levels = c("Overall","Last50","Last25"),ordered=T)
+ggplot(plotdata, aes(fill=`Number of Runs`, y=Winrate, x=Character)) + 
+  geom_bar(position="dodge", stat="identity") +
+  scale_fill_manual(values=c("#7dcfb6", "#f79256", "#fbd1a2"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
