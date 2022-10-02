@@ -273,16 +273,54 @@ for(i in 2:nrow(consec_ind)){
   if(n_rot_wins > n_rot_wins_max){n_rot_wins_max = n_rot_wins}
 }
 max_winstreaks = append(max_winstreaks,n_rot_wins)
-
-print(curr_winstreaks)
-print(max_winstreaks)
-print(curr_lossstreaks)
-print(max_lossstreaks)
-print(curr_rot_info[[2]])
-
 ```
 
 
+```{r}
+# print(curr_winstreaks)
+# print(max_winstreaks)
+# print(curr_lossstreaks)
+# print(max_lossstreaks)
+# print(curr_rot_info[[2]])
+
+
+if(curr_winstreaks[5] != 0){
+  cat(sprintf("The current rotating streak is %s consecutive wins, with %s as the next character\n",curr_winstreaks[5],curr_rot_info[[2]]))
+}else{
+  cat(print("There is no active rotating streak\n"))
+}
+
+cat("\n")
+
+if(curr_lossstreaks[1] == 0){
+  cat(sprintf("The Ironclad is currently on a win streak of %s\n",curr_winstreaks[1]))
+}else{
+  cat(sprintf("The Ironclad is currently on a loss streak of %s\n",curr_lossstreaks[1]))
+}
+if(curr_lossstreaks[2] == 0){
+  cat(sprintf("The Silent is currently on a win streak of %s\n",curr_winstreaks[2]))
+}else{
+  cat(sprintf("The Silent is currently on a loss streak of %s\n",curr_lossstreaks[2]))
+}
+if(curr_lossstreaks[3] == 0){
+  cat(sprintf("The Defect is currently on a win streak of %s\n",curr_winstreaks[3]))
+}else{
+  cat(sprintf("The Defect is currently on a loss streak of %s\n",curr_lossstreaks[3]))
+}
+if(curr_lossstreaks[4] == 0){
+  cat(sprintf("The Watcher is currently on a win streak of %s\n",curr_winstreaks[4]))
+}else{
+  cat(sprintf("The Watcher is currently on a loss streak of %s\n",curr_lossstreaks[4]))
+}
+
+cat("\n")
+
+cat(sprintf("The max rotating streak is %s consecutive wins\n",max_winstreaks[5]))
+cat(sprintf("The Ironclad's max streaks are %s consecutive wins and %s consecutive losses\n",max_winstreaks[1],max_lossstreaks[1]))
+cat(sprintf("The Silent's max streaks are %s consecutive wins and %s consecutive losses\n",max_winstreaks[2],max_lossstreaks[2]))
+cat(sprintf("The Defect's max streaks are %s consecutive wins and %s consecutive losses\n",max_winstreaks[3],max_lossstreaks[3]))
+cat(sprintf("The Watcher's max streaks are %s consecutive wins and %s consecutive losses\n",max_winstreaks[4],max_lossstreaks[4]))
+```
 
 
 
