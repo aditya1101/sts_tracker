@@ -265,7 +265,7 @@ if(curr_runs$victory[1]){ #most recent set of runs are victories, now need to de
 
 #check for max rotating winstreak
 n_rot_wins_max = 0
-for(i in 2:nrow(consec_ind)){
+for(i in 1:nrow(consec_ind)){
   curr_runs = alltab[as.numeric(consec_ind[i,1]):as.numeric(consec_ind[i,2])]
   if(curr_runs$victory[1]){
     n_rot_wins = get_rotating_winstreak(curr_runs)
